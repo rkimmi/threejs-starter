@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<style>
+  body { margin: 0; }
+  canvas { width: 100%; height: 100%; }
+</style>
+<body>
+  <script src='js/three.min.js'></script>
+  <script>
+  // import * as THREE from 'three'
+  // import { Scene, PerspectiveCamera, WebGLRenderer } from 'three'
+  const scene = new THREE.Scene()
+  const camera = new THREE.PerspectiveCamera(115, window.innerWidth / window.innerHeight, 0.1, 1000)
+  const renderer = new THREE.WebGLRenderer()
+
+  renderer.setSize(window.innerWidth, window.innerHeight)
+  document.body.appendChild(renderer.domElement)
+
+  window.addEventListener('resize', function() {
+    const width = window.innerWidth
+    const height = window.innerHeight
+    renderer.setSize(width, height)
+    camera.aspect = width / height
+    camera.updateProjectionMatrix()
+  })
+
+  // controls = new THREE.OrbitControls( camera, renderer.domElement )
+
+  const geometry = new THREE.SphereGeometry(2, 20, 20)
+
+  const cubeMaterials =
+    [
+      new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('pic.jpg'), side: THREE.DoubleSide }), // R
+      new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('pic.jpg'), side: THREE.DoubleSide }), // L
+      new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('pic.jpg'), side: THREE.DoubleSide }), // T
+      new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('pic.jpg'), side: THREE.DoubleSide }), // B
+      new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('pic.jpg'), side: THREE.DoubleSide }), // FRONT
+      new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('pic.jpg'), side: THREE.DoubleSide }) // BACK
+    ]
+
+  const material = new THREE.MeshBasicMaterial({color: 0x4d2bdb, wireframe: true, wireframeLineWidth: 2})
+  const cube = new THREE.Mesh(geometry, material)
+  scene.add(cube)
+
+  // floor geometry
+
+  const floorGeometry = new THREE.CubeGeometry(10, 1, 10)
+  const floorMaterial = new THREE.MeshLambertMaterial({map: new THREE.TextureLoader().load('pic.jpg'), side: THREE.DoubleSide})
+  const floorCube = new THREE.Mesh(floorGeometry, floorMaterial)
+
+  floorCube.position.y = -5
+  scene.add(floorCube)
+
+  const leftWallGeometry = new THREE.CubeGeometry(1, 5, 5)
+  const leftWallMaterial = new THREE.MeshLambertMaterial({map: new THREE.TextureLoader().load('brown-3.jpg'), side: THREE.DoubleSide})
+  const leftWallCube = new THREE.Mesh(leftWallGeometry, leftWallMaterial)
+
+  leftWallCube.position.x = -5
+  scene.add(leftWallCube)
+
+  var light = new THREE.AmbientLight( 0xffffbb, 1.0 )
+  scene.add( light )
+
+  camera.position.z = 5
+  camera.position.y = 2
+
+ // logic 
+  const update = function() {
+    cube.rotation.x += 0.01
+    cube.rotation.y += 0.005
+  }
+
+  const render = function() {
+    renderer.render(scene, camera)
+  }
+
+  const GameLoop = function() {
+    requestAnimationFrame( GameLoop )
+    update()
+    render()
+  }
+
+  GameLoop()
+
+  </script>
+</body>
+</html>
