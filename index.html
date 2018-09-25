@@ -12,6 +12,7 @@
 </style>
 <body>
   <script src='js/three.min.js'></script>
+  <script src="js/three.js"></script>
   <script>
   // import * as THREE from 'three'
   // import { Scene, PerspectiveCamera, WebGLRenderer } from 'three'
@@ -30,22 +31,25 @@
     camera.updateProjectionMatrix()
   })
 
-  // controls = new THREE.OrbitControls( camera, renderer.domElement )
+  const controls = new THREE.OrbitControls( camera )
+  // controls.addEventListener( 'change', render );
 
   const geometry = new THREE.SphereGeometry(2, 20, 20)
 
-  const cubeMaterials =
-    [
-      new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('pic.jpg'), side: THREE.DoubleSide }), // R
-      new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('pic.jpg'), side: THREE.DoubleSide }), // L
-      new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('pic.jpg'), side: THREE.DoubleSide }), // T
-      new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('pic.jpg'), side: THREE.DoubleSide }), // B
-      new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('pic.jpg'), side: THREE.DoubleSide }), // FRONT
-      new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('pic.jpg'), side: THREE.DoubleSide }) // BACK
-    ]
+  // const cubeMaterials =
+  //   [
+  //     new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('pic.jpg'), side: THREE.DoubleSide }), // R
+  //     new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('pic.jpg'), side: THREE.DoubleSide }), // L
+  //     new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('pic.jpg'), side: THREE.DoubleSide }), // T
+  //     new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('pic.jpg'), side: THREE.DoubleSide }), // B
+  //     new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('pic.jpg'), side: THREE.DoubleSide }), // FRONT
+  //     new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('pic.jpg'), side: THREE.DoubleSide }) // BACK
+  //   ]
 
-  const material = new THREE.MeshBasicMaterial({color: 0x4d2bdb, wireframe: true, wireframeLineWidth: 2})
-  const cube = new THREE.Mesh(geometry, material)
+  // const material = new THREE.MeshBasicMaterial({color: 0x4d2bdb, wireframe: false, wireframeLineWidth: 2})
+  const cubeMaterial = new THREE.MeshLambertMaterial({map: new THREE.TextureLoader().load('pic.jpg'), side: THREE.DoubleSide})
+
+  const cube = new THREE.Mesh(geometry, cubeMaterial)
   scene.add(cube)
 
   // floor geometry
@@ -57,11 +61,15 @@
   floorCube.position.y = -5
   scene.add(floorCube)
 
+  // var planeMaterial = new THREE.ShadowMaterial();
   const leftWallGeometry = new THREE.CubeGeometry(1, 5, 5)
   const leftWallMaterial = new THREE.MeshLambertMaterial({map: new THREE.TextureLoader().load('brown-3.jpg'), side: THREE.DoubleSide})
   const leftWallCube = new THREE.Mesh(leftWallGeometry, leftWallMaterial)
 
+  leftWallMaterial.opacity = 0.2;
+
   leftWallCube.position.x = -5
+  leftWallCube.receiveShadow = true;
   scene.add(leftWallCube)
 
   var light = new THREE.AmbientLight( 0xffffbb, 1.0 )
@@ -84,6 +92,7 @@
     requestAnimationFrame( GameLoop )
     update()
     render()
+    controls.update()
   }
 
   GameLoop()
